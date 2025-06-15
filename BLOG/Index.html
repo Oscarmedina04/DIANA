@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Ti, Mi Amor ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <style>
+        :root {
+            --color-primario: #e74c3c;
+            --color-secundario: #c0392b;
+            --color-fondo: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            --color-texto: #2c3e50;
+            --sombra: 0 10px 25px rgba(0, 0, 0, 0.2);
+            --transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--color-fondo);
+            color: var(--color-texto);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            perspective: 1000px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease;
+        }
+        
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            color: var(--color-primario);
+            margin-bottom: 10px;
+        }
+        
+        #musicBtn {
+            background: var(--color-primario);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            margin: 20px auto;
+            display: block;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .memory {
+            position: relative;
+            height: 350px;
+            transform-style: preserve-3d;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .memory-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        .memory.active .memory-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .memory-front, .memory-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--sombra);
+        }
+        
+        .memory-front {
+            background-color: #fff;
+        }
+        
+        .memory-back {
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            text-align: center;
+            transform: rotateY(180deg);
+        }
+        
+        .memory img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .memory-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        
+        .memory.active .memory-overlay {
+            opacity: 0;
+        }
+        
+        .memory-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #333;
+            padding: 20px;
+        }
+        
+        .quiz-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            margin: 40px auto;
+            box-shadow: var(--sombra);
+        }
+        
+        .question {
+            margin-bottom: 20px;
+        }
+        
+        .question textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            min-height: 100px;
+            margin-top: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        #submitQuiz {
+            background: var(--color-primario);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        #quizResult {
+            text-align: center;
+            padding: 30px;
+            background: #fff9f9;
+            border-radius: 15px;
+            margin-top: 20px;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .mensaje-especial {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin: 20px 0;
+            color: #d32f2f;
+        }
+        
+        .firma {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            margin-top: 20px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .memory {
+                height: 300px;
+            }
+            
+            .quiz-container {
+                padding: 20px;
+            }
+            
+            .memory-text {
+                font-size: 1rem;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <audio id="bgMusic" loop>
+        <source src="Café Tacvba - Eres (Video Oficial).mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <header>
+            <h1>Para <span id="herName">DIANA</span></h1>
+            <p class="subtitle">Cada momento a tu lado es un tesoro...</p>
+            <button id="musicBtn">🎵 Activar Música</button>
+        </header>
+
+        <div class="gallery">
+            <div class="memory" data-message="1">
+                <div class="memory-inner">
+                    <div class="memory-front">
+                        <img src="MAS LINDA.jpeg" alt="Momento especial">
+                        <div class="memory-overlay">FOTO MÁS LINDA</div>
+                    </div>
+                    <div class="memory-back">
+                        <div class="memory-text">
+                            "Eres la mujer más hermosa que mis ojos han visto. Cada vez que te veo en esta foto, mi corazón late más fuerte. Tu belleza ilumina mi mundo."
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="memory" data-message="2">
+                <div class="memory-inner">
+                    <div class="memory-front">
+                        <img src="MAS SENSUAL.jpeg" alt="Momento romántico">
+                        <div class="memory-overlay">FOTO MÁS SENSUAL</div>
+                    </div>
+                    <div class="memory-back">
+                        <div class="memory-text">
+                            "Esta foto me quita el aliento... Tu sensualidad natural es irresistible. Eres la combinación perfecta de elegancia y pasión que siempre soñé." 💫
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="memory" data-message="3">
+                <div class="memory-inner">
+                    <div class="memory-front">
+                        <img src="MAS RISUEÑA.jpeg" alt="Sonrisa increíble">
+                        <div class="memory-overlay">FOTO MÁS RISUEÑA</div>
+                    </div>
+                    <div class="memory-back">
+                        <div class="memory-text">
+                            "Tu sonrisa es mi droga favorita. Podría pasar horas perdido en esa risa que ilumina hasta el día más oscuro. Eres pura alegría."☀️
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-container">
+            <h2>Cuestionario Especial</h2>
+            <form id="loveQuiz">
+                <div class="question">
+                    <p>1. ¿Te gustó esta sorpresa?</p>
+                    <label><input type="radio" name="te_gusto" value="Sí" required> Sí</label>
+                    <label><input type="radio" name="te_gusto" value="No"> No</label>
+                </div>
+                
+                <div class="question">
+                    <p>2. ¿Qué piensas de mí?</p>
+                    <textarea name="que_piensas" required placeholder="Escribe lo que sientes..."></textarea>
+                </div>
+                
+                <div class="question">
+                    <p>3. ¿Sientes algún interés en mí?</p>
+                    <label><input type="radio" name="interes" value="Sí" required> Sí</label>
+                    <label><input type="radio" name="interes" value="No"> No</label>
+                </div>
+                
+                <div class="question">
+                    <p>4. ¿Aceptas salir conmigo?</p>
+                    <label><input type="radio" name="salida" value="Sí" required> Sí</label>
+                    <label><input type="radio" name="salida" value="No"> No</label>
+                </div>
+                
+                <button type="submit" id="submitQuiz">Enviar Respuestas</button>
+            </form>
+            
+            <div id="quizResult" class="hidden">
+                <h3>¡Gracias por tus respuestas! 💌</h3>
+                <div id="responseSummary"></div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Hecho con ❤️ por <span id="yourName">tu admirador secreto</span></p>
+        </footer>
+    </div>
+
+    <script>
+        // Inicializar EmailJS
+        (function() {
+            emailjs.init("service_618lmuo"); // Reemplaza con tu User ID de EmailJS
+        })();
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const musicBtn = document.getElementById('musicBtn');
+            const bgMusic = document.getElementById('bgMusic');
+            
+            // Permitir reproducción después de interacción
+            document.body.addEventListener('click', function initAudio() {
+                // Esta función vacía sirve para desbloquear el audio
+                document.body.removeEventListener('click', initAudio);
+            }, { once: true });
+            
+            musicBtn.addEventListener('click', function() {
+                if (bgMusic.paused) {
+                    bgMusic.play()
+                        .then(() => {
+                            musicBtn.textContent = '🎵 Pausar Música';
+                        })
+                        .catch(error => {
+                            console.error("Error al reproducir:", error);
+                            alert("Haz clic primero en cualquier parte de la página para habilitar el audio.");
+                        });
+                } else {
+                    bgMusic.pause();
+                    musicBtn.textContent = '🎵 Activar Música';
+                }
+            });
+            
+            // Efecto giratorio de fotos corregido
+            const memories = document.querySelectorAll('.memory');
+            memories.forEach(memory => {
+                memory.addEventListener('click', function() {
+                    // Quitar la clase 'active' de todas las otras memorias
+                    memories.forEach(m => {
+                        if (m !== this) m.classList.remove('active');
+                    });
+                    
+                    // Alternar la clase 'active' en la memoria clickeada
+                    this.classList.toggle('active');
+                });
+            });
+
+            // Cuestionario
+            document.getElementById('loveQuiz').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const templateParams = {
+                    te_gusto: this.te_gusto.value,
+                    que_piensas: this.que_piensas.value,
+                    interes: this.interes.value,
+                    salida: this.salida.value,
+                    herName: document.getElementById('herName').textContent,
+                    yourName: document.getElementById('yourName').textContent,
+                    fecha: new Date().toLocaleString('es-ES')
+                };
+
+                // Mensaje de agradecimiento personalizado
+                let mensajeEspecial = "";
+                
+                if(templateParams.salida === "Sí") {
+                    mensajeEspecial = "¡Tu 'Sí' a salir conmigo me llena de felicidad! 💖 Estoy emocionado por esta oportunidad de conocerte mejor. Pronto te contactaré para planear nuestro primer encuentro.";
+                } 
+                else if(templateParams.interes === "Sí") {
+                    mensajeEspecial = "Saber que sientes interés por mí me da mucha alegría. 🌹 Aprecio tu sinceridad y espero poder conversar más contigo pronto.";
+                }
+                else if(templateParams.te_gusto === "Sí") {
+                    mensajeEspecial = "Me alegra que te haya gustado esta sorpresa. 🌼 Agradezco mucho que hayas compartido tus pensamientos conmigo.";
+                }
+                else {
+                    mensajeEspecial = "Agradezco profundamente tu honestidad. Cada respuesta tuya es valiosa para mí, incluso cuando no son lo que esperaba escuchar.";
+                }
+
+                // Mostrar mensaje especial
+                document.getElementById('responseSummary').innerHTML = `
+                    <div class="mensaje-especial">
+                        <p>${mensajeEspecial}</p>
+                        <p class="firma">- Con todo mi cariño</p>
+                    </div>
+                `;
+
+                // Mostrar resultados
+                document.getElementById('quizResult').classList.remove('hidden');
+                document.getElementById('loveQuiz').classList.add('hidden');
+                
+                // Desplazarse suavemente al mensaje
+                document.getElementById('quizResult').scrollIntoView({ behavior: 'smooth' });
+                
+                // Enviar respuestas por correo usando EmailJS
+                emailjs.send('default_service', 'template_58c8k25', templateParams)
+                    .then(function(response) {
+                        console.log('Correo enviado con éxito!', response.status, response.text);
+                    }, function(error) {
+                        console.error('Error al enviar correo:', error);
+                    });
+                
+                // Notificación con SweetAlert
+                Swal.fire({
+                    title: '¡Gracias!',
+                    html: '<div style="font-family:\'Dancing Script\',cursive;font-size:1.5rem">Tus respuestas son un regalo para mí</div>',
+                    icon: 'success',
+                    confirmButtonText: '❤️',
+                    confirmButtonColor: '#e74c3c',
+                    background: '#fff5f5',
+                    backdrop: `
+                        rgba(255, 154, 158, 0.4)
+                        url("https://i.gifer.com/7efs.gif")
+                        center top
+                        no-repeat
+                    `
+                });
+            });
+        });
+    </script>
+</body>
+</html>
